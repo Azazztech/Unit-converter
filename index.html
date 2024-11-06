@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="google-site-verification" content="kfBAgQD7rM0UUmnGiO9bJ_47yQu6p0Vaz8qG0ZyzJvw" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unit Converter</title>
@@ -149,7 +148,7 @@
     <nav class="navbar">
         <ul>
             <li><a href="#home">Home</a></li>
-            <li><a href="https://azazztech.github.io/timeanddate.github.io/about.html">About</a></li>
+            <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
             <li><a href="#privacy">Privacy Policy</a></li>
         </ul>
@@ -172,6 +171,8 @@
         <button onclick="convert()">Convert</button>
         
         <h3 id="result"></h3>
+        <div id="location"></div>
+        <div id="localTime"></div>
     </div>
 
     <audio id="click-sound" src="path/to/your/click-sound.mp3" preload="auto"></audio>
@@ -181,6 +182,38 @@
     </footer>
 
     <script>
+        // Function to fetch user's location
+        async function fetchLocation() {
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                const country = data.country_name;
+                timeZone = data.timezone || 'UTC';
+                document.getElementById('location').innerText = `Location: ${country}`;
+                updateTime();
+                setInterval(updateTime, 1000); // Update time every second
+            } catch (error) {
+                document.getElementById('location').innerText = 'Location: Unable to fetch';
+            }
+        }
+
+        // Function to update and display local time with full year
+        function updateTime() {
+            const now = new Date();
+            const options = { 
+                day: '2-digit', 
+                month: 'short', 
+                year: 'numeric', // Full year
+                timeZone 
+            };
+            const localTime = now.toLocaleDateString('en-GB', options); // Change locale to 'en-GB' for DD/Mon/YYYY format
+            const timeString = now.toLocaleTimeString('en-US', { timeZone });
+            document.getElementById('localTime').innerText = `${localTime} ${timeString}`;
+        }
+
+        // Call the fetchLocation function when the page loads
+        fetchLocation();
+
         function convert() {
             const sound = document.getElementById('click-sound');
             sound.currentTime = 0;
@@ -230,4 +263,3 @@
     </script>
 </body>
 </html>
-
